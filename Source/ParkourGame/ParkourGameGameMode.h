@@ -13,6 +13,16 @@ class AParkourGameGameMode : public AGameModeBase
 
 public:
 	AParkourGameGameMode();
+
+	virtual void BeginPlay();
+
+	void AddFloor();
+
+	TSubclassOf<AActor> NewFloor;
+
+public:
+	FTransform NextTransform;
+
 };
 
 
