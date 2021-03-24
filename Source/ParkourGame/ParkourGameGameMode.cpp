@@ -35,7 +35,7 @@ void AParkourGameGameMode::AddFloor()
 	{
 		const FVector MyLocation = NextTransform.GetLocation();
 		const FRotator MyRototion(NextTransform.GetRotation());
-		AFloorBase *MyFloor = GetWorld()->SpawnActor<AFloorBase>(MyLocation, MyRototion);
+		AFloorBase *MyFloor = GetWorld()->SpawnActor<AFloorBase>(NewFloor,MyLocation, MyRototion);
 		NextTransform = MyFloor->GetAttachToTransform(MyLocation);
 	}
 }
