@@ -22,7 +22,7 @@ void AParkourGameGameMode::BeginPlay()
 	Super::BeginPlay();
 	if (GetWorld())
 	{
-		for (int32 i = 0;i<9;i++)
+		for (int32 i = 0;i<2;i++)
 		{
 			AddFloor();
 		}

@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/ArrowComponent.h"
+#include "../ParkourGameCharacter.h"
+#include "../ParkourGameGameMode.h"
 
 // Sets default values
 AFloorBase::AFloorBase()
@@ -31,7 +33,7 @@ AFloorBase::AFloorBase()
 	SpawnPointR->SetupAttachment(SenceComponent);
 	SpawnPointL->SetupAttachment(SenceComponent);
 
-
+	BoxComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &AFloorBase::OnBoxOverlap);
 
 
 }
@@ -56,5 +58,45 @@ FTransform AFloorBase::GetAttachToTransform(FVector MyLocation)
 	Transform.SetLocation(SpawnPoint->GetComponentLocation());
 	Transform.SetRotation(SpawnPoint->GetComponentQuat());
 	return Transform;
+}
+
+void AFloorBase::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Print_F("IsOverlap");
+	if (OtherActor->IsA(AParkourGameCharacter::StaticClass()))
+	{
+		if (GetWorld())
+		{
+			AParkourGameGameMode* CurGameMode = Cast<AParkourGameGameMode>(GetWorld()->GetAuthGameMode());
+			if (CurGameMode)
+			{
+				CurGameMode->AddFloor();
+
+
+				if (MyTimerHandle.IsValid())
+				{
+					GetWorldTimerManager().ClearTimer(MyTimerHandle);
+				}
+				GetWorldTimerManager().SetTimer(MyTimerHandle, this, &AFloorBase::DestroyThis, 1.0f, true);
+			}
+		
+		}
+	}
+}
+
+
+
+void AFloorBase::Print_F(FString PrintString)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0, FColor::Blue, PrintString);
+	}
+}
+
+void AFloorBase::DestroyThis()
+{
+	Print_F("IsDestroy");
+	Destroy();
 }
 
