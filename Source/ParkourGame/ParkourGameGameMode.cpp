@@ -4,6 +4,8 @@
 #include "ParkourGameCharacter.h"
 #include "Floor/FloorBase.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
+#include "UMG/UMG_Main.h"
 
 AParkourGameGameMode::AParkourGameGameMode()
 {
@@ -15,6 +17,12 @@ AParkourGameGameMode::AParkourGameGameMode()
 	}
 	//NewFloor = LoadClass<AActor>(NULL,"CurFloor",TEXT(""));
 	NewFloor = LoadClass<AActor>(NULL, TEXT("Blueprint'/Game/Floor/Blueprint/Floor.Floor_C'"));
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_Main(TEXT("/Game/UMG/WBP_UIMain"));
+
+
+	UMGUIMainAsset = UI_Main.Class;
+
 }
 
 void AParkourGameGameMode::BeginPlay()
@@ -25,6 +33,25 @@ void AParkourGameGameMode::BeginPlay()
 		for (int32 i = 0;i<2;i++)
 		{
 			AddFloor();
+		}
+	}
+	if (UMGUIMainAsset)
+	{
+		if (GetWorld())
+		{
+			MainUI = CreateWidget<UUserWidget>(GetWorld(), UMGUIMainAsset);
+			if (MainUI)
+			{
+				MainUI->AddToViewport();
+				UUMG_Main* MyMainUI = Cast<UUMG_Main>(MainUI);
+				if (MyMainUI)
+				{
+					MyMainUI->CoinNum = FText::FromString(TEXT("0"));
+					MyMainUI->CharacterDistance = FText::FromString(TEXT("0"));
+
+				}
+			
+			}
 		}
 	}
 }

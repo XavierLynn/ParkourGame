@@ -20,6 +20,10 @@ public:
 
 	TSubclassOf<AActor> NewFloor;
 
+	TSubclassOf<UUserWidget> UMGUIMainAsset;
+
+	UUserWidget* MainUI;
+
 public:
 	FTransform NextTransform;
 
